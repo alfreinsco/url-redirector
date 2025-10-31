@@ -21,6 +21,12 @@ const App: React.FC = () => {
       // Mengambil path dari URL, contoh: "/marthin"
       const path = window.location.pathname;
 
+      // Kecualikan path assets/* dari pengecekan nama
+      if (path.startsWith("/assets/")) {
+        console.log("Path assets diabaikan:", path);
+        return;
+      }
+
       // Mengambil bagian terakhir dari path, contoh: "marthin"
       // Membersihkan dari slash di awal jika ada
       const nameFromUrl = path.startsWith("/") ? path.substring(1) : path;
