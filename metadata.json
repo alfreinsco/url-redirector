@@ -1,0 +1,5 @@
+{
+  "name": "URL Redirector",
+  "description": "A simple application to redirect users to a specific link based on the name provided in the URL path. If the name is not found in the data source, an error message is displayed.",
+  "requestFramePermissions": []
+}
