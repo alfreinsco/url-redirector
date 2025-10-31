@@ -146,7 +146,11 @@ const App: React.FC = () => {
       case Status.HOME:
         return (
           <div className="text-center">
-            <HomeIcon />
+            <img
+              src="/assets/img/logo-url-redirector.png"
+              alt="Logo Pengalih URL"
+              className="mx-auto h-20 w-20 mb-4"
+            />
             <h1 className="text-3xl font-bold mt-4 text-teal-400">
               Selamat Datang di Pengalih URL
             </h1>
