@@ -4,6 +4,7 @@ import { Status } from "./types";
 import { UserData } from "./types";
 import { LoadingSpinner, NotFoundIcon, HomeIcon } from "./components/Icons";
 import QRCode from "qrcode";
+import logoImage from "./assets/img/logo-url-redirector.png";
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.IDLE);
@@ -153,7 +154,7 @@ const App: React.FC = () => {
         return (
           <div className="text-center">
             <img
-              src="/assets/img/logo-url-redirector.png"
+              src={logoImage}
               alt="Logo Pengalih URL"
               className="mx-auto h-20 w-20 mb-4"
             />
