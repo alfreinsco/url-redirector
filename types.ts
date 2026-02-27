@@ -10,4 +10,5 @@ export enum Status {
   REDIRECTING = 'REDIRECTING',
   NOT_FOUND = 'NOT_FOUND',
   HOME = 'HOME',
+  QRCODE = 'QRCODE',
 }

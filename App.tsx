@@ -16,15 +16,24 @@ const App: React.FC = () => {
     nama: string;
     link: string;
   } | null>(null);
+  const [qrPageInput, setQrPageInput] = useState<string>("");
+  const [qrPageDataUrl, setQrPageDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const redirectByName = () => {
-      // Mengambil path dari URL, contoh: "/marthin"
+      // Mengambil path dari URL, contoh: "/marthin" atau "/qrcode"
       const path = window.location.pathname;
 
       // Kecualikan path assets/* dari pengecekan nama
       if (path.startsWith("/assets/")) {
         console.log("Path assets diabaikan:", path);
+        return;
+      }
+
+      // Jika path adalah /qrcode maka tampilkan halaman generator QR Code
+      if (path === "/qrcode") {
+        setStatus(Status.QRCODE);
+        console.log("Menampilkan halaman generator QR Code");
         return;
       }
 
@@ -120,6 +129,29 @@ const App: React.FC = () => {
 
   const closeQRPreview = () => {
     setQrPreview(null);
+  };
+
+  const generateQrFromPageInput = async () => {
+    const value = qrPageInput.trim();
+    if (!value) {
+      alert("Silakan masukkan URL terlebih dahulu.");
+      return;
+    }
+
+    try {
+      const qrDataURL = await QRCode.toDataURL(value, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: "#000000",
+          light: "#FFFFFF",
+        },
+      });
+      setQrPageDataUrl(qrDataURL);
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+      alert("Gagal membuat QR code. Silakan coba lagi.");
+    }
   };
 
   const renderContent = () => {
@@ -268,6 +300,101 @@ const App: React.FC = () => {
                 <span className="text-white font-semibold">081318812027</span>
               </p>
             </div>
+          </div>
+        );
+      case Status.QRCODE:
+        return (
+          <div className="text-center">
+            <img
+              src={logoImage}
+              alt="Logo Pengalih URL"
+              className="mx-auto h-20 w-20 mb-4"
+            />
+            <h1 className="text-3xl font-bold mt-2 text-teal-400">
+              Generator QR Code
+            </h1>
+            <p className="mt-2 text-gray-400">
+              Masukkan URL apa pun untuk diubah menjadi QR Code.
+            </p>
+
+            <div className="mt-6 space-y-4 text-left">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                URL
+              </label>
+              <input
+                type="text"
+                placeholder="https://contoh.com/link-anda"
+                value={qrPageInput}
+                onChange={(e) => setQrPageInput(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+              />
+              <button
+                onClick={generateQrFromPageInput}
+                className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM14 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM3 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 15h2m-2 4h4a1 1 0 001-1v-4M19 15h-1a1 1 0 00-1 1v1"
+                  />
+                </svg>
+                Buat QR Code
+              </button>
+            </div>
+
+            {qrPageDataUrl && (
+              <div className="mt-8">
+                <p className="text-sm text-gray-400 mb-4">
+                  Hasil QR Code untuk:
+                </p>
+                <p className="text-xs text-teal-400 mb-4 break-all">
+                  {qrPageInput}
+                </p>
+                <div className="flex justify-center bg-white p-4 rounded-lg inline-block">
+                  <img
+                    src={qrPageDataUrl}
+                    alt="QR Code hasil generator"
+                    className="max-w-full h-auto"
+                  />
+                </div>
+                <button
+                  onClick={() =>
+                    downloadQRCode(qrPageDataUrl, "custom-link")
+                  }
+                  className="mt-4 w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  Download QR Code
+                </button>
+              </div>
+            )}
           </div>
         );
       default:
